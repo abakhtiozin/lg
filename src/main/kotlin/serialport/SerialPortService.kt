@@ -1,16 +1,16 @@
 package serialport
 
 import com.serialpundit.serial.SerialComManager
-import java.lang.Thread.sleep
 
-class SerialPortService(private val portName: String) {
+class SerialPortService {
     private val scm = SerialComManager()
 
     private var handle: Long = 0
+    lateinit var port: String
 
-    fun connect() {
+    private fun connect() {
         this.handle = scm.openComPort(
-                portName,
+                port,
                 true,
                 true,
                 true
@@ -31,34 +31,36 @@ class SerialPortService(private val portName: String) {
                 false,
                 false
         )
+        sendCommands("help")
     }
 
-    fun reset() {
+    private fun reset() {
         println("reset")
-        sendCommands(
-                "help",
-                "3"
-        )
-        sleep(3000)
+        sendCommands("3")
         scm.closeComPort(handle)
     }
 
-    fun turnOnPairing() {
+    private fun turnOnPairing() {
         println("turn on pairing")
-        sendCommands(
-                "help",
-                "5"
-        )
+        sendCommands("5")
         Thread.sleep(7000)
     }
 
-    fun sendCommands(vararg a: String) {
-        for (command in a) {
-            scm.writeString(
-                    handle,
-                    "$command\r\n",
-                    0
-            )
-        }
+    fun sendCommands(vararg commands: String) {
+        for (command in commands) scm.writeString(handle,"$command\r\n",0)
+    }
+
+    operator fun invoke(init: SerialPortService.() -> Unit) {
+        init.invoke(this)
+    }
+
+    fun actions(function: SerialPortActions.() -> () -> Unit) {
+        function.invoke(SerialPortActions(this))
+    }
+
+    class SerialPortActions(service: SerialPortService) {
+        val connect: () -> Unit = { service.connect() }
+        val reset: () -> Unit = { service.reset() }
+        val turnOnPairing: () -> Unit = { service.turnOnPairing() }
     }
 }

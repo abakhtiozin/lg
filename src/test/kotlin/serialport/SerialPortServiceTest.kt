@@ -8,6 +8,7 @@ import org.junit.Test
 import tinyb.BluetoothDevice
 
 class SerialPortServiceTest {
+
     val deviceMacAddress = "D6:C9:F5:73:32:1B"
     val portName = "/dev/ttyACM0"
     var device: BluetoothDevice? = null
@@ -16,16 +17,25 @@ class SerialPortServiceTest {
     @Before
     fun setUp() {
         println("set up")
-        serialport = SerialPortService(portName)
-        serialport.connect()
-        serialport.reset()
+        serialport = SerialPortService()
+        serialport {
+            port = portName
+            actions {
+                connect
+                reset
+            }
+            actions {
+                connect
+                turnOnPairing
+            }
+        }
     }
 
     @Test
     fun turnOnBlueTooth() {
-        serialport = SerialPortService(portName)
-        serialport.connect()
-        serialport.turnOnPairing()
+//        serialport = SerialPortService(portName)
+//        serialport.connect()
+//        serialport.turnOnPairing()
         val bleService = BleService(deviceMacAddress)
         val device = bleService.connect()
         val service = bleService.findService(device, "58a78b01-e280-48a4-8668-b8d8cf947cf8")
@@ -40,33 +50,52 @@ class SerialPortServiceTest {
     fun tearDown() {
         println("tear down")
         device?.disconnect()
-        serialport.reset()
+//        serialport.reset()
     }
+
+//    val comport = ComPort()
+//    comport {
+//        port "/dev/ttyACM0"
+//        action {
+//            connect
+//            reset
+//        }
+//    }
 
     /*
-    connect {
-        by ComPort {
-            to "/dev/ttyACM0"
-            do {
-                reset
-            }
+    comport {
+        port "/dev/ttyACM0"
+        do {
+            connect
+            reset
         }
     }
 
-    connect {
-        by ComPort {
-            to "/dev/ttyACM0"
-            do {
-                pairing on
-            }
-        }
-        by BLE {
-            to "D6:C9:F5:73:32:1B"
-
-            do {
-                pairing on
-            }
+    comport {
+        port "/dev/ttyACM0"
+        do {
+            connect
+            turnOnPairing
         }
     }
+    ble {
+        device "D6:C9:F5:73:32:1B"
+        service "58a78b01-e280-48a4-8668-b8d8cf947cf8"
+        lightService {
+            write
+            read
+            assert
+        }
+        lightService {
+            on
+            off
+            ambient
+            warning1
+            warning2
+            warning3
+        }
+    }
+
     * */
 }
+
