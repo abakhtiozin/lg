@@ -2,15 +2,15 @@ package ble
 
 import tinyb.*
 
-class BleNewService(var address: String = "") {
+open class BleNewService(var address: String = "") {
 
     var service = BleDeviceService()
     var characteristic: BleCharacteristic = BleCharacteristic()
     private var device: BluetoothDevice? = null
-    private var gattService: BluetoothGattService? = null
+    var gattService: BluetoothGattService? = null
     private val manager = BluetoothManager.getBluetoothManager()
 
-    operator fun invoke(init: BleNewService.() -> Unit) {
+    open operator fun invoke(init: BleNewService.() -> Unit) {
         init.invoke(this)
     }
 
@@ -95,21 +95,20 @@ class BleNewService(var address: String = "") {
             gattService = service
         }
     }
-
     inner class BleCharacteristic {
 
-        private var characteristic: BluetoothGattCharacteristic? = null
+        private var gattcharacteristic: BluetoothGattCharacteristic? = null
 
         operator fun invoke(init: BleCharacteristic.() -> Unit) {
             init.invoke(this)
         }
 
         fun read(): ByteArray {
-            return characteristic?.readValue() ?: byteArrayOf(0)
+            return gattcharacteristic?.readValue() ?: byteArrayOf(0)
         }
 
         fun write(byte: Byte) {
-            characteristic?.writeValue(byteArrayOf(byte))
+            gattcharacteristic?.writeValue(byteArrayOf(byte))
         }
 
         fun connect(cUUID: String) {
@@ -118,7 +117,7 @@ class BleNewService(var address: String = "") {
             if (characteristics != null) {
                 for (characteristic in characteristics) {
                     if (characteristic.uuid.contains(cUUID, true)) {
-                        this.characteristic = characteristic
+                        this.gattcharacteristic = characteristic
                         isFound = true
                     }
                 }

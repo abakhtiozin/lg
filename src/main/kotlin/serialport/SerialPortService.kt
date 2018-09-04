@@ -55,6 +55,12 @@ open class SerialPortService(
         sleep(1000)
     }
 
+    private fun waterLevel(status: Status) {
+        println("set water level $status, command:${status.key}")
+        sendCommands(status.key)
+        sleep(1000)
+    }
+
     private fun turnOnPairing() {
         println("turn on pairing")
         sendCommands("5")
@@ -69,9 +75,13 @@ open class SerialPortService(
         }
 
         fun reset() = this@SerialPortService.reset()
-
         fun connect() = this@SerialPortService.connect()
-
         fun turnOnPairing() = this@SerialPortService.turnOnPairing()
+        fun waterLevel(status: () -> Status) = this@SerialPortService.waterLevel(status.invoke())
     }
+}
+
+enum class Status(val key: String) {
+    ON("1"),
+    OFF("2")
 }

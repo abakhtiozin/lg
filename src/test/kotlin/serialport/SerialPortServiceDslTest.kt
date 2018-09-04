@@ -4,6 +4,7 @@ import ble.BleNewService
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 
 class SerialPortServiceDslTest {
@@ -41,6 +42,29 @@ class SerialPortServiceDslTest {
                         connect("8b07")
                         write(0x03)
                         Assert.assertTrue(byteArrayOf(3) contentEquals  read())
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    @Ignore
+    fun `set WLS to OFF on device read WLS on BLE`() {
+        serialport {
+            port = portName
+            actions {
+                waterLevel { Status.OFF }
+            }
+        }
+        device {
+            address = bleAddress
+            connect {
+                service {
+                    findService(serviceUuid)
+                    characteristic {
+                        connect("8b08")
+                        Assert.assertTrue(byteArrayOf(0) contentEquals  read())
                     }
                 }
             }

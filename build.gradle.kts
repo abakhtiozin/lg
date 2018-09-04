@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.com.intellij.openapi.vfs.StandardFileSystems.jar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.gradle.api.tasks.wrapper.Wrapper
 
 buildscript {
     var kotlin_version: String by extra
@@ -33,7 +34,6 @@ repositories {
 dependencies {
     compile(kotlinModule("stdlib-jdk8", kotlin_version))
     compile(files("lib/tinyb.jar"))
-//    compile(group = "org.sputnikdev", name = "bluetooth-manager-tinyb", version = "1.3.2")
     compile(group = "org.bidib.com.serialpundit", name = "sp-tty", version = "1.0.4.1")
     compile(group = "org.bidib.com.serialpundit", name = "sp-core", version = "1.0.4")
     compile(group = "org.bidib.com.serialpundit", name = "sp-usb", version = "1.0.4.1")
@@ -65,4 +65,9 @@ tasks {
         System.setProperty("java.library.path","/usr/java/packages/lib/amd64:/usr/lib64:/lib64:/lib:/usr/lib:/usr/lib/x86_64-linux-gnu")
         dependsOn(fatJar)
     }
+}
+
+task<Wrapper>("wrapper") {
+    gradleVersion = "4.10"
+    distributionType = Wrapper.DistributionType.ALL
 }
