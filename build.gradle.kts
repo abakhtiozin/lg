@@ -4,13 +4,13 @@ import org.gradle.api.tasks.wrapper.Wrapper
 
 buildscript {
     var kotlin_version: String by extra
-    kotlin_version = "1.2.31"
+    kotlin_version = "1.2.51"
 
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath(kotlinModule("gradle-plugin", kotlin_version))
+        classpath(kotlin("gradle-plugin", kotlin_version))
     }
 }
 
@@ -32,7 +32,7 @@ repositories {
 }
 
 dependencies {
-    compile(kotlinModule("stdlib-jdk8", kotlin_version))
+    compile(kotlin("stdlib-jdk8", kotlin_version))
     compile(files("lib/tinyb.jar"))
     compile(group = "org.bidib.com.serialpundit", name = "sp-tty", version = "1.0.4.1")
     compile(group = "org.bidib.com.serialpundit", name = "sp-core", version = "1.0.4")
@@ -54,9 +54,9 @@ val fatJar = task("fatJar", type = Jar::class) {
         attributes["Implementation-Version"] = version
         attributes["Main-Class"] = "AppKt"
     }
-    from(configurations.runtime.map({
+    from(configurations.runtime.map {
         if (it.isDirectory) it else zipTree(it)
-    }))
+    })
     with(tasks["jar"] as CopySpec)
 }
 
