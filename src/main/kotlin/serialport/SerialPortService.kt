@@ -3,14 +3,27 @@ package serialport
 import com.serialpundit.serial.SerialComManager
 import java.lang.Thread.sleep
 
-class SerialPortService(private val portName: String) {
+open class SerialPortService(
+        var port: String = ""
+) {
+    var actions: SerialPortActions = SerialPortActions()
     private val scm = SerialComManager()
-
     private var handle: Long = 0
 
-    fun connect() {
+    operator fun invoke(init: SerialPortService.() -> Unit) {
+        init.invoke(this)
+    }
+
+    private fun sendCommands(vararg commands: String) {
+        commands.forEach { command ->
+            val data = "$command\r\n"
+            scm.writeString(handle, data, 0)
+        }
+    }
+
+    private fun connect() {
         this.handle = scm.openComPort(
-                portName,
+                port,
                 true,
                 true,
                 true
@@ -31,34 +44,34 @@ class SerialPortService(private val portName: String) {
                 false,
                 false
         )
+        sendCommands("help")
+        sleep(2000)
     }
 
-    fun reset() {
+    private fun reset() {
         println("reset")
-        sendCommands(
-                "help",
-                "3"
-        )
-        sleep(3000)
+        sendCommands("3")
         scm.closeComPort(handle)
+        sleep(1000)
     }
 
-    fun turnOnPairing() {
+    private fun turnOnPairing() {
         println("turn on pairing")
-        sendCommands(
-                "help",
-                "5"
-        )
-        Thread.sleep(7000)
+        sendCommands("5")
+        sleep(7000)
+        println("pairing on!")
     }
 
-    fun sendCommands(vararg a: String) {
-        for (command in a) {
-            scm.writeString(
-                    handle,
-                    "$command\r\n",
-                    0
-            )
+    inner class SerialPortActions {
+
+        operator fun invoke(init: SerialPortActions.() -> Unit) {
+            init.invoke(this)
         }
+
+        fun reset() = this@SerialPortService.reset()
+
+        fun connect() = this@SerialPortService.connect()
+
+        fun turnOnPairing() = this@SerialPortService.turnOnPairing()
     }
 }

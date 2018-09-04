@@ -8,24 +8,34 @@ import org.junit.Test
 import tinyb.BluetoothDevice
 
 class SerialPortServiceTest {
-    val deviceMacAddress = "D6:C9:F5:73:32:1B"
-    val portName = "/dev/ttyACM0"
-    var device: BluetoothDevice? = null
-    lateinit var serialport: SerialPortService
+
+    private val deviceMacAddress = "D6:C9:F5:73:32:1B"
+    private val portName = "/dev/ttyACM0"
+    private var device: BluetoothDevice? = null
+    private var serialport: SerialPortService = SerialPortService()
+
 
     @Before
     fun setUp() {
         println("set up")
-        serialport = SerialPortService(portName)
-        serialport.connect()
-        serialport.reset()
+        serialport {
+            port = portName
+            actions {
+                connect()
+                reset()
+            }
+        }
     }
 
     @Test
     fun turnOnBlueTooth() {
-        serialport = SerialPortService(portName)
-        serialport.connect()
-        serialport.turnOnPairing()
+        serialport {
+            actions {
+                connect()
+                turnOnPairing()
+            }
+        }
+
         val bleService = BleService(deviceMacAddress)
         val device = bleService.connect()
         val service = bleService.findService(device, "58a78b01-e280-48a4-8668-b8d8cf947cf8")
@@ -40,7 +50,11 @@ class SerialPortServiceTest {
     fun tearDown() {
         println("tear down")
         device?.disconnect()
-        serialport.reset()
+        device?.cancelPairing()
+        device?.remove()
+        serialport {
+            actions { reset() }
+        }
     }
 
     /*

@@ -15,6 +15,8 @@ class BleService(private val deviceMacAddress: String) {
         @Throws(InterruptedException::class)
         fun getDevice(address: String): BluetoothDevice? {
             val manager = BluetoothManager.getBluetoothManager()
+//            manager.stopDiscovery()
+//            manager.stopNearbyDiscovery()
             var sensor: BluetoothDevice? = null
             var i = 0
             while (i < 15 && running) {
@@ -70,11 +72,10 @@ class BleService(private val deviceMacAddress: String) {
 
         val service = getService(device, uuid)
         if (service == null) {
-            System.err.println("This device does not have the service we are looking for.")
             device?.disconnect()
-            System.exit(-1)
+            throw Exception("This device does not have the service we are looking for.")
         }
-        println("Found service " + service!!.uuid)
+        println("Found service " + service.uuid)
         return service
     }
 
