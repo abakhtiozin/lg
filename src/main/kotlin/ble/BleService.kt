@@ -2,7 +2,7 @@ package ble
 
 import tinyb.*
 
-open class BleNewService(var address: String = "") {
+open class BleService(var address: String = "") {
 
     var service = BleDeviceService()
     var characteristic: BleCharacteristic = BleCharacteristic()
@@ -10,7 +10,7 @@ open class BleNewService(var address: String = "") {
     var gattService: BluetoothGattService? = null
     private val manager = BluetoothManager.getBluetoothManager()
 
-    open operator fun invoke(init: BleNewService.() -> Unit) {
+    open operator fun invoke(init: BleService.() -> Unit) {
         init.invoke(this)
     }
 
