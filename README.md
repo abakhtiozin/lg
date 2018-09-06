@@ -15,9 +15,7 @@ Tinyb requires:
     BlueZ with GATT profile activated (5.37+) //tested on 5.48
 
 to make bluetooth devices discoverable:     
-sudo usermod -a -G bluetooth $user
-    
-SerialPundit    
+sudo usermod -a -G bluetooth $user  
 
 
 Build project
@@ -26,6 +24,7 @@ Make sure you have:
     CMake 3.1+  
     GLib/GIO 2.40+
     BlueZ with GATT profile activated (5.37+) //tested on 5.48
+    doxygen
 
 Clone git repository https://github.com/intel-iot-devkit/tinyb
 Cmake commands:
@@ -67,6 +66,8 @@ if there is no faults and errors you have to copy those files to clipboard
  ../usr/lib/libjavatinyb.so.0.5.1
  ../usr/lib/tinyb.jar
 Also you have to copy tinyb.jar file to project folder lg/lib/tinyb.jar
+
+In the project root directory write ./gradlew clean test
 
 TROUBLESHOOTING
 1. Can't find particular device
