@@ -4,7 +4,7 @@ import org.gradle.api.tasks.wrapper.Wrapper
 
 buildscript {
     var kotlin_version: String by extra
-    kotlin_version = "1.2.51"
+    kotlin_version = "1.2.61"
 
     repositories {
         mavenCentral()
@@ -35,6 +35,7 @@ dependencies {
     compile(kotlin("stdlib-jdk8", kotlin_version))
     compile(files("lib/tinyb.jar"))
     testCompile(files("lib/tinyb.jar"))
+    compile(group = "com.google.code.gson", name = "gson", version = "2.8.5")
     compile(group = "org.bidib.com.serialpundit", name = "sp-tty", version = "1.0.4.1")
     compile(group = "org.bidib.com.serialpundit", name = "sp-core", version = "1.0.4")
     testCompile("junit", "junit", "4.12")

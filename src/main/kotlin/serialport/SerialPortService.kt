@@ -7,6 +7,7 @@ open class SerialPortService(
         var port: String = ""
 ) {
     var actions: SerialPortActions = SerialPortActions()
+    private val config = SerialPortConfig.init()
     private val scm = SerialComManager()
     private var handle: Long = 0
 
@@ -44,26 +45,29 @@ open class SerialPortService(
                 false,
                 false
         )
-        sendCommands("help")
+        sendCommands(config.screen.activate_screen)
         sleep(2000)
     }
 
     private fun reset() {
         println("reset")
-        sendCommands("3")
+        sendCommands(config.screen.press_reset_button)
         scm.closeComPort(handle)
         sleep(1000)
     }
 
     private fun waterLevel(status: Status) {
-        println("set water level $status, command:${status.key}")
-        sendCommands(status.key)
+        println("set water level $status")
+        val command = if (status == Status.ON) {
+            config.screen.water_level_button_on
+        } else config.screen.water_level_button_off
+        sendCommands(command)
         sleep(1000)
     }
 
     private fun turnOnPairing() {
         println("turn on pairing")
-        sendCommands("5")
+        sendCommands(config.screen.long_press_user_button)
         sleep(7000)
         println("pairing on!")
     }
@@ -79,9 +83,10 @@ open class SerialPortService(
         fun turnOnPairing() = this@SerialPortService.turnOnPairing()
         fun waterLevel(status: () -> Status) = this@SerialPortService.waterLevel(status.invoke())
     }
+
 }
 
-enum class Status(val key: String) {
-    ON("1"),
-    OFF("2")
+enum class Status {
+    ON,
+    OFF
 }

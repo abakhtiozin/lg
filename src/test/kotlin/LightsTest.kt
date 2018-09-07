@@ -4,18 +4,14 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
+import serialport.SerialPortConfig
 import serialport.SerialPortService
 import serialport.Status
 
 class LightsTest {
-    init {
-        System.getProperties()
-                .filter { it.key.toString().contains("java.library.path") }
-                .forEach{ println(it)}
-    }
+    private val portConfig: SerialPortConfig = SerialPortConfig.init()
     private val bleAddress = "D6:C9:F5:73:32:1B"
     private val serviceUuid = "58a78b01-e280-48a4-8668-b8d8cf947cf8"
-    private val portName = "/dev/ttyACM0"
     private var serialport: SerialPortService = SerialPortService()
     private val device = BleService()
 
@@ -23,7 +19,7 @@ class LightsTest {
     fun setUp() {
         println("set up")
         serialport {
-            port = portName
+            port = portConfig.port
             actions {
                 connect()
                 reset()
@@ -56,7 +52,7 @@ class LightsTest {
     @Ignore
     fun `set WLS to OFF on device read WLS on BLE`() {
         serialport {
-            port = portName
+            port = portConfig.port
             actions {
                 waterLevel { Status.OFF }
             }

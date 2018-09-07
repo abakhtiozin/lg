@@ -71,3 +71,11 @@ Also you have to copy tinyb.jar file to project folder lg/lib/tinyb.jar
 TROUBLESHOOTING
 1. Can't find particular device
 1.1. Turn off - turn on bluetooth on you PC
+
+
+
+MAC OS
+brew install cmake
+brew install glib
+brew install pkgconfig
+

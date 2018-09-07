@@ -1,0 +1,11 @@
+{
+  "port":"/dev/ttyACM0",
+  "screen": {
+    "activate_screen": "help",
+    "water_level_button_on": "1",
+    "water_level_button_off": "2",
+    "press_reset_button": "3",
+    "short_press_user_button": "4",
+    "long_press_user_button": "5"
+  }
+}
