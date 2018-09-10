@@ -2,7 +2,7 @@
   "device": {
     "address": "D6:C9:F5:73:32:1B",
     "service": "58a78b01-e280-48a4-8668-b8d8cf947cf8",
-    "light-service": {
+    "light-state": {
       "uuid": "8b07",
       "on":"1",
       "off":"3",
@@ -10,6 +10,11 @@
       "Warning 1":"5",
       "Warning 2":"6",
       "Warning 3":"7"
+    },
+    "water-level-state": {
+      "uuid": "8b08",
+      "good":"1",
+      "low":"0"
     }
   }
 }

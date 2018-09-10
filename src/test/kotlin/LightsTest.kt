@@ -1,3 +1,4 @@
+import ble.BleConfig
 import ble.BleService
 import org.junit.After
 import org.junit.Assert
@@ -10,8 +11,9 @@ import serialport.Status
 
 class LightsTest {
     private val portConfig: SerialPortConfig = SerialPortConfig.init()
-    private val bleAddress = "D6:C9:F5:73:32:1B"
-    private val serviceUuid = "58a78b01-e280-48a4-8668-b8d8cf947cf8"
+    private val bleConfig = BleConfig.init()
+    private val bleAddress = bleConfig.device.address
+    private val serviceUuid = bleConfig.device.service
     private var serialport: SerialPortService = SerialPortService()
     private val device = BleService()
 
@@ -39,7 +41,7 @@ class LightsTest {
                 service {
                     findService(serviceUuid)
                     characteristic {
-                        connect("8b07")
+                        connect(bleConfig.device.lightState.uuid)
                         write(0x03)
                         Assert.assertTrue(byteArrayOf(3) contentEquals  read())
                     }
